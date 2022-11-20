@@ -27,6 +27,6 @@ https://i.ibb.co/LQbnwRt/choose-branch.png
 10. Wait while your PR will be approved:\
 https://i.ibb.co/4fMCqTq/wait-for-pr.png
 
-10. After your PR will be approved - press green button "Merge pull request"
-11. Delete your branch `maksymchuk/lesson_04` from GitHub repository
-12. Now you are good.
+11. After your PR will be approved - press green button "Merge pull request"
+12. Delete your branch `maksymchuk/lesson_04` from GitHub repository
+13. Now you are good.
