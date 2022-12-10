@@ -21,25 +21,18 @@ def create_files_list(extensions: list[str, ...], files_amount: int) -> list[str
 # Optional[None] - error
 
 def create_files(dir: str, files: list[str, ...]) -> Optional[str]:
-    try:
-        os.chdir(dir)
-        [os.system(f"echo {EMPTY_STRING} > {f}") for f in files]
-    except OSError:
-        print("Error")
-        return
-    return str(os.listdir())
+    os.chdir(dir)
+    [os.system(f"echo {EMPTY_STRING} > {f}") for f in files]
+    return
 
 
 # Optional[None] - error
 def delete_files_by_extension(dir: str, extension: str) -> Optional[None]:
-    try:
-        os.chdir(dir)
-        files = os.listdir()
-        for file_name in files:
-            if file_name.endswith(extension):
-                os.remove(file_name)
-    except:
-        print("Error")
+    os.chdir(dir)
+    files = os.listdir()
+    for file_name in files:
+        if file_name.endswith(extension):
+            os.remove(file_name)
     return
 
 r = create_files('tmp', create_files_list(EXTENSIONS, FILES_AMOUNT))
