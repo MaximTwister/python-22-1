@@ -63,7 +63,6 @@ def create_files_list(extensions: list[str], files_amount: int) -> list[str] | s
 
 def create_files(files: [list[str], None], ) -> [Optional[str]]:
     error = None
-    res = None
     try:
         os.chdir(new_pass)
         print(f"My work directory: {os.getcwd()}")
@@ -73,7 +72,7 @@ def create_files(files: [list[str], None], ) -> [Optional[str]]:
         print(f'{per} - you do not have permission to create files in this directory')
     except FileExistsError as fxt:
         print(f"{fxt}")
-    return res, error
+    return
 
 
 file_list = create_files_list(extensions=EXTENSIONS, files_amount=FILES_AMOUNT)
