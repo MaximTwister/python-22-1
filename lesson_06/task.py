@@ -12,7 +12,7 @@ def create_files_list(extensions: list[str, ...], files_amount: int) -> list[str
 
 
 # Optional[None] - error
-def create_files(dir: str, files: list[str, ...]) -> Optional[str]:
+def create_files(work_dir: str, files: list[str, ...]) -> Optional[str]:
     # create all `files` in `dir` folder
     pass
 

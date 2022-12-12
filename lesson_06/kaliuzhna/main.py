@@ -1,79 +1,76 @@
-import constant
+import constants
 import random
 from typing import Optional
 import os
 
+from constants import (
+    EXTENSIONS,
+    FILES_AMOUNT,
+    FILENAME_LENGTH,
+    WORKING_DIR,
+    EMPTY_STRING,
+)
 
-files_list = []
-def create_files_list(extensions: list[str], files_amount: int = 20, sym=5) -> tuple[list[str], None]:
 
+def create_files_list(extensions: list[str], files_amount: int, sym: int) -> tuple[list[str], Optional[str]]:
     err = None
+    files_list = []
+
     try:
         rn = [x for x in range(10 ** (sym - 1), 10 ** sym)]
         random.shuffle(rn)
-        for elem in extensions:
-            for r in range(1, (files_amount + 1)):
-                files_list.append(str(rn[r]) + "." + elem)
+        for extension in extensions:
+            for r in range(files_amount):
+                files_list.append(str(rn[r]) + "." + extension)
     except ValueError:
-        print('A ValueError occured!')
+        err = 'A ValueError occured!'
     except Exception as e:
-        print(f"Unexpected {e}, {type(e)=}")
-    else:
-        print('No exception')
+        err = f"Unexpected {e}, {type(e)=}"
+
     return files_list, err
-()
 
 
-def create_files(dir:[str], files_list: [list[str], None]) -> [Optional[str]]:
-    res = None
+def create_files(working_dir: str, files_list: list[str, ...]) -> [Optional[str]]:
     err = None
+
     try:
-        os.chdir(dir)
-        print(f"My work directory: {os.getcwd()}")
-        [os.system(f"echo {constant.EMPTY_STRING} > {f}") for f in files_list]
+        os.chdir(working_dir)
+        print(f"My working directory: {os.getcwd()}")
+        [os.system(f"echo {EMPTY_STRING} > {f}") for f in files_list]
         print(f"files in directory: {os.listdir()}")
+
     except FileExistsError as e:
-        print(f"{e}") # попытка создания файла или директории, которая уже существует.
+        err = f"{e}"  # попытка создания файла или директории, которая уже существует.
     except FileNotFoundError as m:
-        print(f"{m}") #- файл или директория не существует.
+        err = f"{m}"  # файл или директория не существует.
     except InterruptedError as p:
-        print(f"{p}") #- системный вызов прерван входящим сигналом.
+        err = f"{p}"  # системный вызов прерван входящим сигналом.
     except IsADirectoryError as v:
-        print(f"{v}") # ожидался файл, но это директория.
+        err = f"{v}"  # ожидался файл, но это директория.
     except NotADirectoryError as r:
-        print(f"{r}") #- ожидалась директория, но это файл.
+        err = f"{r}"  # ожидалась директория, но это файл.
     except PermissionError as g:
-        print(f"{g}") # не хватает прав доступа.
+        print(f"{g}")  # не хватает прав доступа.
     except ProcessLookupError as k:
-        print(f"{k}") # #указанного процесса не существует.
+        print(f"{k}")  # указанного процесса не существует.
     except TimeoutError as w:
-        print(f"{w}") #закончилось время ожидания."
-    return res, err
-()
+        print(f"{w}")  # закончилось время ожидания."
+    return err
 
 
 def main():
-    if (type(constant.EXTENSIONS) is list and constant.EXTENSIONS
-        and [isinstance(elem, str) for elem in constant.EXTENSIONS]
-        and (type(constant.FILES_AMOUNT) is int and constant.FILES_AMOUNT > 0)
-        and (type(constant.SYMB) is int and constant.SYMB > 0)
-        and (constant.FILES_AMOUNT <= (9 * 10 ** (constant.SYMB - 1)))):
-        files_list, err = create_files_list(constant.EXTENSIONS, constant.FILES_AMOUNT, constant.SYMB)
-        if err:
-            print(err)
-        else:
-            print(f"Files list: {files_list}")
-    else:
-        print("error: not supported argument type")
+    file_names, err = create_files_list(EXTENSIONS, FILES_AMOUNT, FILENAME_LENGTH)
+
+    if err:
+        print("Oops. error during names creation: {err}")
+        return
+    print(f"File-names amount: {len(file_names)}\n{file_names}")
+
+    err = create_files(WORKING_DIR, file_names, )
+
+    if err:
+        print("Oops. error during files creation: {err}")
+        return
 
 
-DIR = "/Users/Пользователь/test"
-files = tuple(files_list)
-print(files)
-
-res, err = create_files(DIR, files)
-
-
-main()
-
-
+main()  # Entrypoint
