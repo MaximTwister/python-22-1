@@ -1,36 +1,37 @@
-from messages import (
-    MAIN_MENU,
-    MAIN_MENU_MAP
+import sys
+
+from messages import UNSUPPORTED_PARAM_TEMPLATE
+
+from utils import (
+    show_main_menu,
+    add_gen,
+    print_gen_list,
+    start_gen_work,
+    stop_gen_work,
+    perform_maintenance,
 )
 
-from constants import GEN_KEYS
-from utils import dump_generators
 
-show_next_menu = False
-main_menu_opt_int = 0
-
-# TODO: rewrite to be flexible with all menus
-while show_next_menu is False:
-    menu_opt_str = input(MAIN_MENU)
-    try:
-        menu_opt_int = int(menu_opt_str)
-    except ValueError as e:
-        print(f"error: unsupported param: {menu_opt_str}")
-    else:
-        show_next_menu = True
+MAIN_MENU_MAP = {
+    0: show_main_menu,
+    1: add_gen,
+    2: print_gen_list,
+    3: start_gen_work,
+    4: stop_gen_work,
+    5: perform_maintenance,
+    6: sys.exit
+}
 
 
-next_object = MAIN_MENU_MAP.get(menu_opt_int, 0)
-next_func = next_object.get("func")
-next_menu = next_object.get("sub_menu")
+def main():
+    param = show_main_menu()
+    while True:
+        next_func = MAIN_MENU_MAP.get(param, None)
+        if next_func:
+            param = next_func()
+        else:
+            print(UNSUPPORTED_PARAM_TEMPLATE.format(param=param))
+            param = show_main_menu()
 
-if next_func:
-    next_func()
-else:
-    answers = []
-    for question in next_menu:
-        answer = input(question)
-        answers.append(answer)
 
-    answers_dict = dict(zip(GEN_KEYS, answers))
-    dump_generators(answers_dict)
+main()
