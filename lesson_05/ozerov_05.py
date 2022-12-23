@@ -1,3 +1,5 @@
+import sys
+
 currencies_map = {
     "USD_UAH": 40.7,
     "UAH_USD": 0.027,
@@ -11,6 +13,7 @@ def currency_converter(currency_from, currency_to, currency_from_val):
         return currency_from_val * currencies_ratio
     else:
         print("Value must be greater than 0")
+        sys.exit()
 
 
 def update_currencies_map(currency_from, currency_to, currency_from_val):
