@@ -152,5 +152,6 @@ def perform_maintenance():
         if gen["id"] == gen_id:
             gen["oil"] = GOOD
             gen["session"] = EMPTY_SESSION
+            gen["motohours"] = 0
     dump_generators(data)
     return LIST_GEN_MENU_OPTION
