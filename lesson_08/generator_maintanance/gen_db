@@ -1,0 +1,1 @@
+[{"name": "HONDA", "description": "4 STROKE GEN", "model": "H-1000", "change_oil_period": 1, "id": 1, "session": {"start": null, "stop": null}, "session_after_maint": {"start": null, "stop": null}, "total_motohours": 0, "motohours_after_maint": 0, "state": 0, "oil": "\u2705"}]
