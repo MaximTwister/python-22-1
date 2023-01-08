@@ -24,7 +24,6 @@ def transaction_validator(func):
 
 @transaction_validator
 def transaction(from_object, to_object, trans_sum):
-    # Write transaction logic
     from_object_balance = from_object['balance']
     to_object_balance = to_object['balance']
     from_object_sum = from_object_balance - trans_sum
