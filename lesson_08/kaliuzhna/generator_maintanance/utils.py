@@ -54,7 +54,7 @@ def filter_started_gens(data):
 
 
 def filter_maintainable_gens(data):
-     return [gen for gen in data if gen["oil"] == MAINTENANCE]
+    return [gen for gen in data if gen["oil"] == MAINTENANCE]
 
 
 def start_gen_work():
@@ -146,12 +146,11 @@ def show_main_menu():
 
 
 def perform_maintenance():
-    gen_id = select_gen_menu(filter_func=filter_maintainable_gens, state="maintenance")
+    gen_id = select_gen_menu(filter_func=filter_maintainable_gens, state="maintain")
     data = load_generators()
     for gen in data:
         if gen["id"] == gen_id:
+            gen["motohours"] = 0.000
             gen["oil"] = GOOD
-            gen["session"] = EMPTY_SESSION
-            gen["motohours"] = 0
     dump_generators(data)
     return LIST_GEN_MENU_OPTION
