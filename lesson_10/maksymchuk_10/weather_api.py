@@ -1,5 +1,4 @@
 from pprint import pprint
-
 import requests
 from tabulate import tabulate
 import os
