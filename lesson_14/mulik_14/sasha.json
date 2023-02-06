@@ -1,0 +1,13 @@
+{
+  "martin": {
+    "name": "Martin Devloper",
+    "job": "Developer",
+    "skill": "Elite"
+  },
+  "fruits": [
+    "Apple",
+    "Orange",
+    "Strawberry",
+    "Mango"
+  ]
+}
