@@ -1,22 +1,9 @@
-# Download Images Class
-# Class takes one parameter path to config file
-#
-# https://docs.python.org/3/library/configparser.html
-# Inside config file:
-# [pixabay.com]
-# Endpoint = pixabay.com/api
-# Key =
-# Files Amount =
-# Theme = space
-# [another-cool-source.com]
-#
 import configparser
 import io
-import requests
-import os
 from threading import Thread as th
+
+import requests
 from PIL import Image
-import time
 
 
 class ImagesDownloader:
