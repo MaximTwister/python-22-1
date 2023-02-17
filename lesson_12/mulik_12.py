@@ -1,9 +1,10 @@
 import io
-import requests
 import os
-from threading import Thread as th
-from PIL import Image
 import time
+from threading import Thread as th
+
+import requests
+from PIL import Image
 
 api_key = os.environ["PIXABAY_API_KEY"]
 
