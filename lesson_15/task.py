@@ -2,10 +2,8 @@
 #   1.1 Both abstract methods should have annotation types.
 # 2. Inherit Abstract class by child
 # 3. Implement abstract methods
-#   *3.1 Implemented methods should control data types (decorator)
+#   3.1 Implemented methods should control data types (decorator)
 #
 # HINTS:
 # 1. dict: `__annotations__`
-# 2. import annotate
 #
-# Install PostgreSQL
