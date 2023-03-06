@@ -22,7 +22,7 @@ customers, main_courses, drinks, meals, orders, discounts
 
 ----
 `orders` - table with customer's orders
-**COLUMNS**: order_id, customer_id, order_sum_price
+**COLUMNS**: order_id, order_date, customer_id, order_sum
 
 ----
 `order_meal` - many-to-many table which is joining orders and corresponding meals
@@ -30,7 +30,7 @@ customers, main_courses, drinks, meals, orders, discounts
 
 ----
 `discounts` - contains all discounts
-**COLUMNS**: customer_id, discount_percentage, meal_id, period
+**COLUMNS**: customer_id, percents, meal_id, period
 >NOTE: not always customer_id must be present - i.e. some discounts can be applied for all our customers, but yes some only for concrete customers.
 
 
