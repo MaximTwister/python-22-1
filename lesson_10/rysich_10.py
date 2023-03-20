@@ -8,9 +8,8 @@ geocoding_url = "http://api.openweathermap.org/geo/1.0/direct"
 forecast_url = "http://api.openweathermap.org/data/2.5/forecast"
 
 api_key = "33c5ec8515f15ff8ab32679ca9acda93"
+
 # input - take city name (Ukraine only) from user
-
-
 def get_city():
     while True:
         city = input("Enter your city and we will show you the weather "
@@ -74,8 +73,6 @@ def get_city_forecast(params):
                         l["main"]["temp_max"],
                         l["main"]["humidity"]])
         print(pt.get_string())
-        #pprint(f"{forecast_url} response:\n")
-        #pprint(res.json())
         return res.json()
     except requests.exceptions.HTTPError:
         return None
@@ -97,7 +94,7 @@ def forecast_city() -> dict:
         print("Error")
 
 
-def mode_choice():
+def main():
     while True:
         choice = input("Current weather or forecast: ")
         if choice == "weather":
@@ -109,10 +106,4 @@ def mode_choice():
             break
 
 
-mode_choice()
-
-
-
-# input mode - `current weather` or `forecast`
-
-# show requested data with `pretty table` lib
+main()
