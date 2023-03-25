@@ -1,11 +1,23 @@
-### One File Home-task view:
-`lesson_<number>/<surname>_<home-task_number>.py`\
-lesson_04/maksymchuk_04.py
+### OneFile Home-task view:
+```
+lesson_04
+└── maksymchuk
+    └── file.py
+```
 
-### Several Files Home-task view:
-`lesson_<number>/<surname>/*`\
-lesson_04/maksymchuk/*
+### ProjectLike Home-task view:
+```
+lesson_04
+└── maksymchuk
+    ├── directory1
+    │   ├── file1.py
+    │   └── file2.py
+    └── directory2
+        ├── file1.py
+        └── file2.py
+```
 
+---
 ## Workflow how to work with Git.
 Before you start to do your task (all examples for lesson_04):
 1. Be sure you are in repository folder and pull all recent changes form `hometasks` branch with command:
