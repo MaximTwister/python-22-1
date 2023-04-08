@@ -19,7 +19,6 @@ session: Session = sessionmaker(bind=engine)()
 
 
 # One-to-One Relation
-
 class User(Base):
     __tablename__ = "users"
 
