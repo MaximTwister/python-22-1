@@ -1,0 +1,30 @@
+{% extends "tracker/base.html" %}
+
+{% block title %} Exercises List {% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col h-100 align-items-center">
+            <h1>Exercises List:</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for exercise in exercise_list %}
+                        <tr>
+                            <td>{{ exercise.name }}</td>
+                            <td>{{ exercise.description }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endblock %}
+        </div>
+    </div>
+</div>
