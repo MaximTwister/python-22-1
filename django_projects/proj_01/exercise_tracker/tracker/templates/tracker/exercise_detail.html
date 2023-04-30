@@ -1,0 +1,12 @@
+{% extends "tracker/base.html" %}
+
+{% block title %} Exercise: {{ exercise.name }} {% endblock %}
+
+{% block content %}
+    <h1>{{ exercise.name }}</h1>
+    {% for set in sets %}
+        <h3>Workout ID: {{ set.workout.id }}</h3>
+        <p> {{ set.date_time }}</p>
+        <p> {{ set.reps }}</p>
+    {% endfor %}
+{% endblock %}

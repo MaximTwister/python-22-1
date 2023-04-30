@@ -1,8 +1,15 @@
 from django.shortcuts import render
 from django.http import HttpRequest
 from django.urls import reverse_lazy
-from tracker.models import Exercise
-from django.views.generic import ListView, FormView
+from tracker.models import (
+    Exercise,
+    Set,
+)
+from django.views.generic import (
+    ListView,
+    FormView,
+    DetailView,
+)
 from tracker.forms import ExerciseForm
 
 
@@ -29,3 +36,15 @@ class ExerciseFormView(FormView):
     def form_valid(self, form):
         form.save()
         return super().form_valid(form)
+
+
+class ExerciseDetailView(DetailView):
+    # template name: `exercise_detail.html`
+    # inside template context name: `exercise`
+    model = Exercise
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        exercise = self.get_object()
+        context["sets"] = Set.objects.filter(exercise=exercise)
+        return context
