@@ -1,0 +1,4 @@
+netifaces==0.11.0
+scapy==2.5.0
+pythonping==1.1.4
+apscheduler==3.10.1
