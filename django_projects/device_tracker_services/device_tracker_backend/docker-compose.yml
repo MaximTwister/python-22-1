@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres
+    ports:
+      - "5555:5432"
+    environment:
+      - POSTGRES_DB=device_tracker_backend
+      - POSTGRES_USER=maksym
+      - POSTGRES_PASSWORD=12345678
