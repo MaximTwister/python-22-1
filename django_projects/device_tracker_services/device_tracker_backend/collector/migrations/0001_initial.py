@@ -73,7 +73,6 @@ class Migration(migrations.Migration):
                     models.CharField(
                         help_text="The network SSID",
                         max_length=32,
-                        validators=[collector.validators.validate_ssid],
                     ),
                 ),
                 ("description", models.CharField(max_length=50)),
