@@ -55,7 +55,9 @@ def run_pinger(
     interval = time.perf_counter() - start_time
     print(f"\n{'='*60}\nfound {len(ok_results)} devices - it takes {interval} secs\n{'='*60}")
     data: list = prepare_data_to_send(ok_results=ok_results, ssid=ssid)
-    # TODO: Send `data` to DRF endpoint
+    # url = get_url(endpoint="some-session-endpoint")
+    # response = send_data(url=url, data=data)
+    # print(f"endpoint response: {response}")
 
 
 def get_nic_ip_address(nic: str):

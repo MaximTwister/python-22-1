@@ -1,6 +1,6 @@
 from django.db import models
-from collector.validators import validate_ssid
 from django.contrib.auth import get_user_model
+
 
 class Device(models.Model):
 
@@ -23,6 +23,9 @@ class Device(models.Model):
         blank=True,
         null=True,
     )
+    missed_pings = models.IntegerField(default=0)
+    missed_pings_threshold = models.IntegerField(default=2)
+    last_modified = models.DateTimeField(auto_now=True)
 
 
 class Network(models.Model):
@@ -32,7 +35,7 @@ class Network(models.Model):
         WIFI = "W", "Wi-Fi"
         LAN = "L", "LAN"
 
-    ssid = models.CharField(max_length=32, help_text="The network SSID", validators=[validate_ssid])
+    ssid = models.CharField(max_length=32, help_text="The network SSID")
     description = models.CharField(max_length=50)
     network_type = models.CharField(max_length=1, choices=NetworkTypes.choices)
     known_devices = models.ManyToManyField(to="Device", related_name="known_networks")
@@ -40,4 +43,14 @@ class Network(models.Model):
 
 
 class Session(models.Model):
-    pass
+
+    class StatusType(models.TextChoices):
+        ACTIVE = "A", "active session"
+        CLOSED = "C", "closed session"
+        CLOSED_FORCIBLY = "F", "closed forcibly session"
+
+    start = models.DateTimeField(auto_now=True)
+    end = models.DateTimeField(null=True)
+    network = models.ForeignKey(to="Network", related_name="sessions", on_delete=models.CASCADE)
+    device = models.ForeignKey(to="Device", related_name="sessions", on_delete=models.CASCADE)
+    status = models.CharField(max_length=1, choices=StatusType.choices, default=StatusType.ACTIVE)
