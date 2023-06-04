@@ -30,10 +30,12 @@ class NetworkSerializer(ModelSerializer):
 
 
 class UpdateCreateSessionSerializer(ModelSerializer):
-    device_mac_addr = CharField(source="device.mac_addr", write_only=True)
-    device_ip_addr = IPAddressField(source="device.ipv4", write_only=True)
-    network_ssid = CharField(source="network.ssid", write_only=True, validators=[validate_network_ssid_exists])
+    device_mac_addr = CharField(source="device.mac_addr", required=False)
+    device_ipv4_addr = IPAddressField(source="device.ipv4", required=False)
+    network_ssid = CharField(source="network.ssid", validators=[validate_network_ssid_exists])
+    # 5 digits/chars key
+    # network_key =
 
     class Meta:
         model = Session
-        fields = ["device_mac_addr", "device_ip_addr", "network_ssid"]
+        fields = ["device_mac_addr", "device_ipv4_addr", "network_ssid"]

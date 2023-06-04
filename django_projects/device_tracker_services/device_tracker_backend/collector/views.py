@@ -39,11 +39,17 @@ class UpdateCreateSessionView(APIView):
                 ipv4 = data.get("device_ipv4_addr")
                 ssid = data.get("network_ssid")
 
-                device = get_or_create_device(mac_addr, ipv4)
-                maintain_device_sessions(ssid, device)
-                live_mac_addresses.append(mac_addr)
+                if all([ipv4, mac_addr]):
+                    device = get_or_create_device(mac_addr, ipv4)
+                    maintain_device_sessions(ssid, device)
+                    live_mac_addresses.append(mac_addr)
 
             maintain_missed_pings(ssid, live_mac_addresses)
             return Response(data=serializer.data, status=HTTP_200_OK)
 
         return Response(data=serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+
+# TODO: When we create a Network send back Network-Key to user
+# TODO: create endpoint to get all devices (MACs IPs and IDs) with Network-Key
+# TODO: create endpoint to set devices Name and/or type with device id

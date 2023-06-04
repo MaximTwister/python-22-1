@@ -14,6 +14,8 @@ from scapy.layers.l2 import Ether, ARP, Packet
 from scapy.sendrecv import srp
 from scapy.plist import SndRcvList, PacketList, QueryAnswer
 
+from sender import get_url, send_data
+
 
 def run_pinger(
         count: int,
@@ -54,10 +56,10 @@ def run_pinger(
     ok_results: List[ResponseList] = [result for result in all_results if result.success()]
     interval = time.perf_counter() - start_time
     print(f"\n{'='*60}\nfound {len(ok_results)} devices - it takes {interval} secs\n{'='*60}")
-    data: list = prepare_data_to_send(ok_results=ok_results, ssid=ssid)
-    # url = get_url(endpoint="some-session-endpoint")
-    # response = send_data(url=url, data=data)
-    # print(f"endpoint response: {response}")
+    data: List[dict] = prepare_data_to_send(ok_results=ok_results, ssid=ssid)
+    url = get_url(endpoint="device-sessions")
+    response = send_data(url=url, data=data)
+    print(f"endpoint: {url} response: {response}")
 
 
 def get_nic_ip_address(nic: str):
@@ -124,7 +126,7 @@ def prepare_data_to_send(ok_results: List[ResponseList], ssid: str):
             break
 
     print(f"`data_to_send`: {data_to_send}")
-    return data_to_send
+    return data_to_send if data_to_send else [{"network_ssid": ssid}]
 
 
 def get_mac_addr(ip):
@@ -212,3 +214,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# TODO: register network before start send data
