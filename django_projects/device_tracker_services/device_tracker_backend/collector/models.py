@@ -27,6 +27,9 @@ class Device(models.Model):
     missed_pings_threshold = models.IntegerField(default=2)
     last_modified = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f"{self.name} - {self.ipv4} - {self.mac_addr} - {self.missed_pings}"
+
 
 class Network(models.Model):
 
@@ -49,7 +52,8 @@ class Session(models.Model):
         CLOSED = "C", "closed session"
         CLOSED_FORCIBLY = "F", "closed forcibly session"
 
-    start = models.DateTimeField(auto_now=True)
+    start = models.DateTimeField(auto_now_add=True)
+    last_modified = models.DateTimeField(auto_now=True)
     end = models.DateTimeField(null=True)
     network = models.ForeignKey(to="Network", related_name="sessions", on_delete=models.CASCADE)
     device = models.ForeignKey(to="Device", related_name="sessions", on_delete=models.CASCADE)

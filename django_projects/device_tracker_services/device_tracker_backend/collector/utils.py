@@ -41,7 +41,7 @@ def maintain_device_sessions(ssid: str, device: Device):
 def maintain_missed_pings(ssid: str, live_mac_addresses: list):
     network = Network.objects.get(ssid=ssid)
     # session must be active; session must belong to exact network
-    query = {"session__status": Session.StatusType.ACTIVE, "session__network": network}
+    query = {"sessions__status": Session.StatusType.ACTIVE, "sessions__network": network}
     devices = Device.objects.filter(**query)
 
     # Update `missed_pings` field:
@@ -49,7 +49,10 @@ def maintain_missed_pings(ssid: str, live_mac_addresses: list):
     devices.filter(mac_addr__in=live_mac_addresses).update(missed_pings=0)
 
     # Close session for devices that exceed `missed_ping_threshold`
-    lost_devices = devices.filter(missed_pings__gte=F("missed_ping_threshold"))
-    Session.objects.filter(device__in=lost_devices, network=network, status=Session.StatusType.ACTIVE).\
-        update(status=Session.StatusType.CLOSED)
-    lost_devices.update(missed_pings=0)
+    lost_devices = list(devices.filter(missed_pings__gte=F("missed_pings_threshold")))
+    Session.objects.filter(
+        device__in=lost_devices,
+        network=network,
+        status=Session.StatusType.ACTIVE
+    ).update(status=Session.StatusType.CLOSED)
+    Device.objects.filter(pk__in=[device.pk for device in lost_devices]).update(missed_pings=0)
