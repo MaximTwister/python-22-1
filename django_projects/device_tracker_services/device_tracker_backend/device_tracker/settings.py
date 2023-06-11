@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     # added
     "rest_framework",
     "collector",
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [

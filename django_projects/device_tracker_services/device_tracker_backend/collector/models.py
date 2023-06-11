@@ -3,6 +3,9 @@ from django.contrib.auth import get_user_model
 
 
 class Device(models.Model):
+    """
+    Super Description for Device Collector `Device` model
+    """
 
     class DeviceTypes(models.TextChoices):
         SMARTPHONE = "SM", "Smartphone"
@@ -12,7 +15,8 @@ class Device(models.Model):
         WATCH = "WT", "Watch",
         GAME_CONSOLE = "GC", "Gaming Console"
 
-    ipv4 = models.GenericIPAddressField(protocol="IPv4")
+    secret_key = models.CharField(max_length=4, unique=True)
+    ipv4 = models.GenericIPAddressField(protocol="IPv4", help_text="Internet Protocol version 4 (IPv4)")
     mac_addr = models.CharField(max_length=17)
     name = models.CharField(max_length=20)
     device_type = models.CharField(max_length=2, choices=DeviceTypes.choices)
@@ -38,6 +42,7 @@ class Network(models.Model):
         WIFI = "W", "Wi-Fi"
         LAN = "L", "LAN"
 
+    secret_key = models.CharField(max_length=4, unique=True)
     ssid = models.CharField(max_length=32, help_text="The network SSID")
     description = models.CharField(max_length=50)
     network_type = models.CharField(max_length=1, choices=NetworkTypes.choices)

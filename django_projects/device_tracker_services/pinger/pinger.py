@@ -15,6 +15,7 @@ from scapy.sendrecv import srp
 from scapy.plist import SndRcvList, PacketList, QueryAnswer
 
 from sender import get_url, send_data
+from settings import CREATE_SESSION_ENDPOINT
 
 
 def run_pinger(
@@ -57,7 +58,7 @@ def run_pinger(
     interval = time.perf_counter() - start_time
     print(f"\n{'='*60}\nfound {len(ok_results)} devices - it takes {interval} secs\n{'='*60}")
     data: List[dict] = prepare_data_to_send(ok_results=ok_results, ssid=ssid)
-    url = get_url(endpoint="device-sessions")
+    url = get_url(endpoint=CREATE_SESSION_ENDPOINT)
     response = send_data(url=url, data=data)
     print(f"endpoint: {url} response: {response}")
 
@@ -118,8 +119,10 @@ def prepare_data_to_send(ok_results: List[ResponseList], ssid: str):
 
             device_data = {
                 "network_ssid": ssid,
-                "device_mac_addr": mac_addr,
-                "device_ipv4_addr": device_ip,
+                "device": {
+                    "mac_addr": mac_addr,
+                    "ipv4": device_ip,
+                }
             }
 
             data_to_send.append(device_data)
