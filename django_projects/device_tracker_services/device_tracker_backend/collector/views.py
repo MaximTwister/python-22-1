@@ -1,20 +1,27 @@
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg.openapi import Parameter, IN_BODY, TYPE_STRING
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.request import Request
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from rest_framework.status import (
+    HTTP_200_OK,
+    HTTP_400_BAD_REQUEST,
+    HTTP_404_NOT_FOUND,
+)
 
+from collector.models import Network
 from collector.serializers import (
     NetworkSerializer,
-    UpdateCreateSessionSerializer,
+    SessionSerializer,
+    NetworkActiveDevicesSerializer,
+    SecretKeySerializer,
 )
-from collector.utils import (
-    get_or_create_device,
-    maintain_device_sessions,
-    maintain_missed_pings,
-)
+from collector.utils import maintain_missed_pings
 
 
-class CreateNetworkView(APIView):
+class NetworkCreateView(APIView):
+
+    @swagger_auto_schema(request_body=NetworkSerializer)
     def post(self, request: Request):
 
         serializer = NetworkSerializer(data=request.data)
@@ -25,31 +32,56 @@ class CreateNetworkView(APIView):
         return Response(data=serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
-class UpdateCreateSessionView(APIView):
+class SessionUpdateCreateView(APIView):
+
+    @swagger_auto_schema(
+        request_body=SessionSerializer,
+        responses={
+            200: SessionSerializer,
+            400: "Bad Request - Validation Failed"
+        }
+    )
     def post(self, request: Request):
-        serializer = UpdateCreateSessionSerializer(data=request.data, many=True)
+        serializer = SessionSerializer(data=request.data, many=True)
 
-        if serializer.is_valid():
-            live_mac_addresses = []
-            ssid = ""
+        if not serializer.is_valid():
+            return Response(data=serializer.errors, status=HTTP_400_BAD_REQUEST)
+        serializer.save()
 
-            for data in serializer.data:
-                data: dict
-                mac_addr = data.get("device_mac_addr")
-                ipv4 = data.get("device_ipv4_addr")
-                ssid = data.get("network_ssid")
+        live_mac_addresses = []
+        ssid = ""
 
-                if all([ipv4, mac_addr]):
-                    device = get_or_create_device(mac_addr, ipv4)
-                    maintain_device_sessions(ssid, device)
-                    live_mac_addresses.append(mac_addr)
+        for data in serializer.data:
+            device = data.get("device")
+            ssid = data.get("network_ssid")
+            live_mac_addresses.append(device.get("mac_addr"))
 
-            maintain_missed_pings(ssid, live_mac_addresses)
-            return Response(data=serializer.data, status=HTTP_200_OK)
-
-        return Response(data=serializer.errors, status=HTTP_400_BAD_REQUEST)
+        maintain_missed_pings(ssid, live_mac_addresses)
+        return Response(data=serializer.data, status=HTTP_200_OK)
 
 
-# TODO: When we create a Network send back Network-Key to user
-# TODO: create endpoint to get all devices (MACs IPs and IDs) with Network-Key
+class NetworkActiveDevicesGetView(APIView):
+
+    @swagger_auto_schema(
+        request_body=SecretKeySerializer,
+        responses={
+            200: NetworkActiveDevicesSerializer(),
+            400: "Bad Request - No secret key provided in response body",
+            404: "Not Found - No network found with provided secret key"
+        }
+    )
+    def post(self, request):
+        secret_key = request.data.get("secret_key")
+        if not secret_key:
+            return Response({"error": "secret_key was not provided"}, status=HTTP_400_BAD_REQUEST)
+
+        try:
+            network = Network.objects.get(secret_key=secret_key)
+        except Network.DoesNotExist:
+            return Response({"error": "Network not found"}, status=HTTP_404_NOT_FOUND)
+
+        serializer = NetworkActiveDevicesSerializer(network)
+        return Response(serializer.data)
+
+
 # TODO: create endpoint to set devices Name and/or type with device id

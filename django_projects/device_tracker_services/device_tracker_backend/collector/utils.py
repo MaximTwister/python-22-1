@@ -1,13 +1,23 @@
 from datetime import datetime
+from random import choices
+from typing import Optional, Type
+from string import digits, ascii_uppercase
 
 from django.utils import timezone
 from django.db.models import F
+from rest_framework.exceptions import ValidationError
+
 from collector.models import Device, Network, Session
 
 
-def get_or_create_device(mac_addr, ipv4):
+def get_or_create_device(mac_addr: str, ipv4: str) -> Device:
+    secret_key = get_secret_key(model=Device)
+    if not secret_key:
+        raise ValidationError({"error": "Device `secret_key` was not generated"})
+
     device, created = Device.objects.get_or_create(
-        mac_addr=mac_addr, defaults={"ipv4": ipv4}
+        mac_addr=mac_addr,
+        defaults={"ipv4": ipv4, "secret_key": secret_key}
     )
 
     if not created and device.ipv4 != ipv4:
@@ -27,15 +37,25 @@ def close_other_networks_sessions(active_session, network):
     )
 
 
-def maintain_device_sessions(ssid: str, device: Device):
+def get_device_session(device: Device, ssid: str) -> Session:
     network = Network.objects.get(ssid=ssid)
 
-    all_active_session = device.sessions.filter(status=Session.StatusType.ACTIVE)
-    close_other_networks_sessions(all_active_session, network)
-    current_network_active_session = all_active_session.filter(network=network).first()
-    if not current_network_active_session:
-        new_session = Session.objects.create(network=network, device=device)
-        print(f"session for deice: {device} in network: {network} was created: {new_session}")
+    # Get all active sessions for the device
+    active_sessions = device.sessions.filter(status=Session.StatusType.ACTIVE)
+
+    # Close inactive sessions that are not related to the current network
+    close_other_networks_sessions(active_sessions, network)
+
+    # Check if there is already an active session for this device on the network
+    active_session = active_sessions.filter(network=network).first()
+    result = "already created"
+
+    if not active_session:
+        active_session = Session.objects.create(network=network, device=device)
+        result = "created"
+
+    print(f"session for deice: {device} in network: {network} was {result}: {active_session}")
+    return active_session
 
 
 def maintain_missed_pings(ssid: str, live_mac_addresses: list):
@@ -56,3 +76,15 @@ def maintain_missed_pings(ssid: str, live_mac_addresses: list):
         status=Session.StatusType.ACTIVE
     ).update(status=Session.StatusType.CLOSED)
     Device.objects.filter(pk__in=[device.pk for device in lost_devices]).update(missed_pings=0)
+
+
+def get_secret_key(model: Type[Network] | Type[Device], tries_threshold=100) -> Optional[str]:
+    print(f"{model} generation key ...")
+    for gen_try in range(1, tries_threshold):
+        secret_key = "".join(choices(ascii_uppercase + digits, k=4))
+        if not model.objects.filter(secret_key=secret_key).exists():
+            print(f"{model} key was generated: {secret_key} with {gen_try} try")
+            return secret_key
+
+    print(f"ERROR: failed to generate a unique secret_key for {model} with {tries_threshold} tries")
+    return None
